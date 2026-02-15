@@ -128,7 +128,6 @@ export default function ChatScreen() {
                 <SafeAreaView edges={['bottom']} style={styles.inputSafeArea}>
                     <ChatInput
                         onSend={handleSend}
-                        onClear={handleClear}
                         onAttachPress={() => setModalVisible(true)}
                         isStreaming={isStreaming}
                         attachments={attachments}

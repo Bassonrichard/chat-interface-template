@@ -19,7 +19,6 @@ const MIN_INPUT_HEIGHT = 44;
 
 interface ChatInputProps {
     onSend: (text: string, attachments: string[]) => void;
-    onClear: () => void;
     onAttachPress: () => void;
     isStreaming: boolean;
     attachments?: string[];
@@ -33,12 +32,10 @@ interface ChatInputProps {
  * - Multi-line auto-growing text input
  * - Send button (arrow)
  * - Attach button (+) opens AttachmentModal
- * - Clear button (trash) clears chat
  * - Thumbnail previews for attached images
  */
 export default function ChatInput({
     onSend,
-    onClear,
     onAttachPress,
     isStreaming,
     attachments = [],
@@ -129,14 +126,7 @@ export default function ChatInput({
                     />
                 </View>
 
-                {/* Clear / Send buttons */}
-                <TouchableOpacity
-                    style={styles.iconButton}
-                    onPress={onClear}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                >
-                    <Ionicons name="trash-outline" size={22} color={colors.textMuted} />
-                </TouchableOpacity>
+                {/* Send button */}
 
                 <TouchableOpacity
                     style={[
