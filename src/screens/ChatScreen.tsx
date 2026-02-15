@@ -10,7 +10,7 @@ import {
     type ListRenderItemInfo,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, spacing, typography, radii } from '../theme';
@@ -83,6 +83,11 @@ export default function ChatScreen() {
         []
     );
 
+    const insets = useSafeAreaInsets();
+
+    // Header height calculation: paddingVertical (12*2) + icon size (22) + border (1) = 47
+    const HEADER_HEIGHT = 47;
+
     return (
         <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
             <StatusBar style="light" />
@@ -105,7 +110,8 @@ export default function ChatScreen() {
             {/* Chat area */}
             <KeyboardAvoidingView
                 style={styles.flex}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? HEADER_HEIGHT + insets.top : 0}
             >
                 {messages.length === 0 ? (
                     <View style={styles.emptyContainer}>
@@ -132,15 +138,17 @@ export default function ChatScreen() {
                 )}
 
                 {/* Input */}
-                <SafeAreaView edges={Platform.OS === 'ios' ? ['bottom'] : []} style={styles.inputSafeArea}>
-                    <ChatInput
-                        onSend={handleSend}
-                        onAttachPress={() => setModalVisible(true)}
-                        isStreaming={isStreaming}
-                        attachments={attachments}
-                        onRemoveAttachment={handleRemoveAttachment}
-                    />
-                </SafeAreaView>
+                <View style={[styles.inputContainer, { paddingBottom: Platform.OS === 'android' ? spacing.sm : 0 }]}>
+                    <SafeAreaView edges={Platform.OS === 'ios' ? ['bottom'] : []} style={styles.inputSafeArea}>
+                        <ChatInput
+                            onSend={handleSend}
+                            onAttachPress={() => setModalVisible(true)}
+                            isStreaming={isStreaming}
+                            attachments={attachments}
+                            onRemoveAttachment={handleRemoveAttachment}
+                        />
+                    </SafeAreaView>
+                </View>
             </KeyboardAvoidingView>
 
             {/* Attachment modal */}
@@ -216,6 +224,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     inputSafeArea: {
+        backgroundColor: colors.background,
+    },
+    inputContainer: {
         backgroundColor: colors.background,
     },
 });
