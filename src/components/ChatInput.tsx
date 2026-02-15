@@ -118,6 +118,7 @@ export default function ChatInput({
                         placeholder="Message..."
                         placeholderTextColor={colors.textMuted}
                         multiline
+                        autoFocus
                         onContentSizeChange={handleContentSizeChange}
                         textAlignVertical="center"
                         returnKeyType={Platform.OS === 'ios' ? 'default' : 'send'}

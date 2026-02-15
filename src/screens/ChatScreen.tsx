@@ -105,27 +105,34 @@ export default function ChatScreen() {
             {/* Chat area */}
             <KeyboardAvoidingView
                 style={styles.flex}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
-                <FlatList
-                    ref={flatListRef}
-                    data={reversedMessages}
-                    renderItem={renderMessage}
-                    keyExtractor={(item) => item.id}
-                    inverted
-                    contentContainerStyle={[
-                        styles.messagesContent,
-                        messages.length === 0 && styles.emptyContent,
-                    ]}
-                    showsVerticalScrollIndicator={false}
-                    keyboardDismissMode="interactive"
-                    keyboardShouldPersistTaps="handled"
-                    ListEmptyComponent={renderEmpty}
-                />
+                {messages.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <View style={styles.emptyIconContainer}>
+                            <Ionicons name="chatbubbles-outline" size={48} color={colors.textMuted} />
+                        </View>
+                        <Text style={styles.emptyTitle}>Start a conversation</Text>
+                        <Text style={styles.emptySubtitle}>
+                            Send a message to begin chatting
+                        </Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        ref={flatListRef}
+                        data={reversedMessages}
+                        renderItem={renderMessage}
+                        keyExtractor={(item) => item.id}
+                        inverted
+                        contentContainerStyle={styles.messagesContent}
+                        showsVerticalScrollIndicator={false}
+                        keyboardDismissMode="interactive"
+                        keyboardShouldPersistTaps="handled"
+                    />
+                )}
 
                 {/* Input */}
-                <SafeAreaView edges={['bottom']} style={styles.inputSafeArea}>
+                <SafeAreaView edges={Platform.OS === 'ios' ? ['bottom'] : []} style={styles.inputSafeArea}>
                     <ChatInput
                         onSend={handleSend}
                         onAttachPress={() => setModalVisible(true)}
@@ -186,8 +193,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        // Inverted FlatList flips the empty view, so we un-flip it
-        transform: [{ scaleY: -1 }],
         paddingHorizontal: spacing.xl,
     },
     emptyIconContainer: {
