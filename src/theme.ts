@@ -1,3 +1,5 @@
+import type { TextStyle } from 'react-native';
+
 /**
  * Design system tokens for the chat interface template.
  * Dark-mode palette inspired by ChatGPT / Claude.
@@ -31,7 +33,7 @@ export const colors = {
   // Borders / dividers
   border: '#2A2A40',
   overlay: 'rgba(0, 0, 0, 0.6)',
-};
+} as const;
 
 export const spacing = {
   xs: 4,
@@ -40,7 +42,7 @@ export const spacing = {
   lg: 16,
   xl: 20,
   xxl: 28,
-};
+} as const;
 
 export const radii = {
   sm: 8,
@@ -48,16 +50,16 @@ export const radii = {
   lg: 20,
   xl: 24,
   full: 9999,
-};
+} as const;
 
 export const typography = {
   headerSize: 18,
   bodySize: 16,
   captionSize: 12,
   fontWeight: {
-    regular: '400',
-    medium: '500',
-    semibold: '600',
-    bold: '700',
+    regular: '400' as TextStyle['fontWeight'],
+    medium: '500' as TextStyle['fontWeight'],
+    semibold: '600' as TextStyle['fontWeight'],
+    bold: '700' as TextStyle['fontWeight'],
   },
-};
+} as const;

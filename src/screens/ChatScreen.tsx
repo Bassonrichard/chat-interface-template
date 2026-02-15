@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    type ListRenderItemInfo,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +19,7 @@ import ChatBubble from '../components/ChatBubble';
 import AssistantMessage from '../components/AssistantMessage';
 import ChatInput from '../components/ChatInput';
 import AttachmentModal from '../components/AttachmentModal';
+import type { ChatMessage } from '../types';
 
 /**
  * Main chat screen.
@@ -31,15 +33,15 @@ import AttachmentModal from '../components/AttachmentModal';
  */
 export default function ChatScreen() {
     const { messages, sendMessage, clearChat, isStreaming } = useChat();
-    const [attachments, setAttachments] = useState([]);
+    const [attachments, setAttachments] = useState<string[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const flatListRef = useRef(null);
+    const flatListRef = useRef<FlatList<ChatMessage>>(null);
 
     // Reverse messages for inverted FlatList (newest at bottom)
     const reversedMessages = [...messages].reverse();
 
     const handleSend = useCallback(
-        (text, currentAttachments) => {
+        (text: string, currentAttachments: string[]) => {
             sendMessage(text, currentAttachments);
             setAttachments([]);
         },
@@ -51,15 +53,15 @@ export default function ChatScreen() {
         setAttachments([]);
     }, [clearChat]);
 
-    const handleAttach = useCallback((uri) => {
+    const handleAttach = useCallback((uri: string) => {
         setAttachments((prev) => [...prev, uri]);
     }, []);
 
-    const handleRemoveAttachment = useCallback((index) => {
+    const handleRemoveAttachment = useCallback((index: number) => {
         setAttachments((prev) => prev.filter((_, i) => i !== index));
     }, []);
 
-    const renderMessage = useCallback(({ item }) => {
+    const renderMessage = useCallback(({ item }: ListRenderItemInfo<ChatMessage>) => {
         if (item.role === 'user') {
             return <ChatBubble message={item} />;
         }

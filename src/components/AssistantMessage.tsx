@@ -3,15 +3,20 @@ import { View, StyleSheet } from 'react-native';
 import Animated, { FadeInLeft } from 'react-native-reanimated';
 import Markdown from 'react-native-markdown-display';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, typography } from '../theme';
+import { colors, spacing, typography, radii } from '../theme';
 import TypingIndicator from './TypingIndicator';
+import type { ChatMessage } from '../types';
+
+interface AssistantMessageProps {
+    message: ChatMessage;
+}
 
 /**
  * Assistant message — full-width, left-aligned with markdown rendering.
  * Shows a small sparkle icon and renders content via markdown.
  * Displays a typing indicator while streaming with no content yet.
  */
-export default function AssistantMessage({ message }) {
+export default function AssistantMessage({ message }: AssistantMessageProps) {
     const showTyping = message.isStreaming && !message.content;
 
     return (

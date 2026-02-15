@@ -27,7 +27,11 @@ export default function TypingIndicator() {
     );
 }
 
-function BouncingDot({ delay }) {
+interface BouncingDotProps {
+    delay: number;
+}
+
+function BouncingDot({ delay }: BouncingDotProps) {
     const translateY = useSharedValue(0);
 
     useEffect(() => {
@@ -42,7 +46,7 @@ function BouncingDot({ delay }) {
                 false
             )
         );
-    }, []);
+    }, [delay, translateY]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }],

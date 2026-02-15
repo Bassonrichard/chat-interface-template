@@ -7,6 +7,8 @@ import {
     ScrollView,
     StyleSheet,
     Platform,
+    type NativeSyntheticEvent,
+    type TextInputContentSizeChangeEventData,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '../theme';
@@ -14,6 +16,15 @@ import { colors, spacing, radii } from '../theme';
 const MAX_INPUT_LINES = 5;
 const INPUT_LINE_HEIGHT = 22;
 const MIN_INPUT_HEIGHT = 44;
+
+interface ChatInputProps {
+    onSend: (text: string, attachments: string[]) => void;
+    onClear: () => void;
+    onAttachPress: () => void;
+    isStreaming: boolean;
+    attachments?: string[];
+    onRemoveAttachment?: (index: number) => void;
+}
 
 /**
  * Bottom chat input bar.
@@ -32,10 +43,10 @@ export default function ChatInput({
     isStreaming,
     attachments = [],
     onRemoveAttachment,
-}) {
+}: ChatInputProps) {
     const [text, setText] = useState('');
     const [inputHeight, setInputHeight] = useState(MIN_INPUT_HEIGHT);
-    const inputRef = useRef(null);
+    const inputRef = useRef<TextInput>(null);
 
     const canSend = (text.trim().length > 0 || attachments.length > 0) && !isStreaming;
 
@@ -46,11 +57,14 @@ export default function ChatInput({
         setInputHeight(MIN_INPUT_HEIGHT);
     }, [text, attachments, canSend, onSend]);
 
-    const handleContentSizeChange = useCallback((e) => {
-        const contentHeight = e.nativeEvent.contentSize.height;
-        const maxHeight = INPUT_LINE_HEIGHT * MAX_INPUT_LINES + 22; // padding
-        setInputHeight(Math.min(Math.max(MIN_INPUT_HEIGHT, contentHeight), maxHeight));
-    }, []);
+    const handleContentSizeChange = useCallback(
+        (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
+            const contentHeight = e.nativeEvent.contentSize.height;
+            const maxHeight = INPUT_LINE_HEIGHT * MAX_INPUT_LINES + 22; // padding
+            setInputHeight(Math.min(Math.max(MIN_INPUT_HEIGHT, contentHeight), maxHeight));
+        },
+        []
+    );
 
     return (
         <View style={styles.container}>

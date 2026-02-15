@@ -13,6 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { colors, spacing, radii, typography } from '../theme';
 
+interface AttachmentModalProps {
+    visible: boolean;
+    onClose: () => void;
+    onAttach: (uri: string) => void;
+}
+
 /**
  * Bottom-sheet modal for attaching photos.
  *
@@ -20,7 +26,7 @@ import { colors, spacing, radii, typography } from '../theme';
  * - Camera: launches system camera via expo-image-picker
  * - Photos: launches system gallery via expo-image-picker
  */
-export default function AttachmentModal({ visible, onClose, onAttach }) {
+export default function AttachmentModal({ visible, onClose, onAttach }: AttachmentModalProps) {
     const handleCamera = async () => {
         const permission = await ImagePicker.requestCameraPermissionsAsync();
         if (!permission.granted) {

@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Animated, { FadeInRight, FadeInUp } from 'react-native-reanimated';
 import { colors, spacing, radii, typography } from '../theme';
+import type { ChatMessage } from '../types';
+
+interface ChatBubbleProps {
+    message: ChatMessage;
+}
 
 /**
  * User message bubble — right-aligned teal pill.
  * Shows attached images as thumbnails above the text.
  */
-export default function ChatBubble({ message }) {
+export default function ChatBubble({ message }: ChatBubbleProps) {
     const time = new Date(message.timestamp).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',

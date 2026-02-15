@@ -1,3 +1,5 @@
+import type { StreamCallbacks, StreamHandle } from '../types';
+
 /**
  * Mock SSE streaming service.
  *
@@ -18,7 +20,7 @@ const CHUNK_DELAY_MS = 30;
 /**
  * Generates a rich markdown response that echoes the user's message.
  */
-function formatEchoResponse(userText) {
+function formatEchoResponse(userText: string): string {
     return `## Echo Response
 
 I received your message:
@@ -46,8 +48,8 @@ console.log(message);
 /**
  * Splits text into word-level chunks, preserving whitespace and newlines.
  */
-function chunkify(text) {
-    const chunks = [];
+function chunkify(text: string): string[] {
+    const chunks: string[] = [];
     let current = '';
 
     for (let i = 0; i < text.length; i++) {
@@ -70,22 +72,18 @@ function chunkify(text) {
 
 /**
  * Streams a mock response for the given user message.
- *
- * @param {string} userText - The user's message text
- * @param {object} callbacks
- * @param {(chunk: string) => void} callbacks.onChunk - Called for each text chunk
- * @param {() => void} callbacks.onComplete - Called when streaming is done
- * @param {(error: Error) => void} [callbacks.onError] - Called on error
- * @returns {{ cancel: () => void }} - Call cancel() to abort the stream
  */
-export function streamResponse(userText, { onChunk, onComplete, onError }) {
+export function streamResponse(
+    userText: string,
+    { onChunk, onComplete, onError }: StreamCallbacks
+): StreamHandle {
     const formatted = formatEchoResponse(userText);
     const chunks = chunkify(formatted);
 
     let index = 0;
     let cancelled = false;
 
-    function emitNext() {
+    function emitNext(): void {
         if (cancelled) return;
 
         if (index < chunks.length) {
@@ -94,7 +92,7 @@ export function streamResponse(userText, { onChunk, onComplete, onError }) {
                 index++;
                 setTimeout(emitNext, CHUNK_DELAY_MS);
             } catch (err) {
-                onError?.(err);
+                onError?.(err instanceof Error ? err : new Error(String(err)));
             }
         } else {
             onComplete();

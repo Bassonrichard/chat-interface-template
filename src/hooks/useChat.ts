@@ -1,32 +1,34 @@
 import { useState, useCallback, useRef } from 'react';
 import { streamResponse } from '../services/streamService';
+import type { ChatMessage, StreamHandle } from '../types';
 
 /**
  * Generates a unique ID for messages.
  */
-function generateId() {
+function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+export interface UseChatReturn {
+    messages: ChatMessage[];
+    sendMessage: (text: string, attachments?: string[]) => void;
+    clearChat: () => void;
+    isStreaming: boolean;
 }
 
 /**
  * Custom hook for chat state management.
- *
- * Returns:
- *   messages       - array of message objects
- *   sendMessage    - (text, attachments?) => void
- *   clearChat      - () => void
- *   isStreaming     - boolean, true while assistant is responding
  */
-export function useChat() {
-    const [messages, setMessages] = useState([]);
+export function useChat(): UseChatReturn {
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isStreaming, setIsStreaming] = useState(false);
-    const activeStreamRef = useRef(null);
+    const activeStreamRef = useRef<StreamHandle | null>(null);
 
-    const sendMessage = useCallback((text, attachments = []) => {
+    const sendMessage = useCallback((text: string, attachments: string[] = []) => {
         if (!text.trim() && attachments.length === 0) return;
 
         // 1. Add user message
-        const userMessage = {
+        const userMessage: ChatMessage = {
             id: generateId(),
             role: 'user',
             content: text.trim(),
@@ -37,7 +39,7 @@ export function useChat() {
 
         // 2. Create placeholder assistant message
         const assistantId = generateId();
-        const assistantMessage = {
+        const assistantMessage: ChatMessage = {
             id: assistantId,
             role: 'assistant',
             content: '',
